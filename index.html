@@ -31,7 +31,6 @@
         }
     </script>
     
-    <!-- Custom styles for radio/checkbox colors -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -48,6 +47,15 @@
             outline: 2px solid #513873;
             outline-offset: 2px;
         }
+
+        .option-wrapper {
+            transition: all 0.2s ease;
+        }
+        
+        .option-wrapper:hover {
+            border-color: #9C7F9D;
+            background-color: rgba(198, 180, 217, 0.1);
+        }
     </style>
 </head>
 <body class="bg-brand-bg min-h-screen flex items-center justify-center p-4">
@@ -58,7 +66,7 @@
         <!-- Quiz Header -->
         <div id="quiz-header">
             <h1 class="text-2xl md:text-3xl font-bold text-brand-darker mb-2">Module 1 Knowledge Check</h1>
-            <p class="text-sm text-gray-600 mb-6" id="question-counter">Question 1 of 3</p>
+            <p class="text-sm text-gray-600 mb-6" id="question-counter">Question 1 of 4</p>
         </div>
 
         <!-- Question Area -->
@@ -72,26 +80,29 @@
         </div>
 
         <!-- Feedback Area -->
-        <div class="mt-6">
+        <div class="mt-6 min-h-[2rem]">
             <p id="feedback-text" class="text-center font-semibold text-lg" aria-live="polite"></p>
         </div>
 
         <!-- Button Controls -->
-        <div class="mt-6 space-y-3">
+        <div class="mt-4 space-y-3">
             <button id="check-btn" class="w-full bg-brand-dark text-white py-3 px-5 rounded-lg font-semibold hover:bg-brand-darker transition-colors focus:outline-none focus:ring-2 focus:ring-brand-dark focus:ring-offset-2">
                 Check Answer
             </button>
-            
-            <!-- The 'Next Question' button has been moved into the modal below -->
         </div>
-
     </div>
 
     <!-- Correct Answer Modal (Pop-out) -->
-    <div id="correct-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 hidden" aria-modal="true" role="dialog">
-        <div class="bg-white rounded-xl p-8 shadow-2xl text-center max-w-sm w-full">
-            <h2 class="text-2xl font-bold text-green-600 mb-6">Correct! Well done</h2>
-            <button id="next-btn" class="w-full bg-white text-brand-dark border-2 border-brand-dark py-2.5 px-5 rounded-lg font-semibold hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-dark focus:ring-offset-2">
+    <div id="correct-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 hidden z-50" aria-modal="true" role="dialog">
+        <div class="bg-white rounded-xl p-8 shadow-2xl text-center max-w-sm w-full transform transition-all">
+            <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                </svg>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">Correct!</h2>
+            <p class="text-gray-600 mb-6">Well done on identifying the right response.</p>
+            <button id="next-btn" class="w-full bg-brand-dark text-white py-3 px-5 rounded-lg font-semibold hover:bg-brand-darker transition-colors focus:outline-none focus:ring-2 focus:ring-brand-dark focus:ring-offset-2">
                 Next Question
             </button>
         </div>
@@ -99,9 +110,14 @@
 
     <!-- Completion Screen -->
     <div id="completion-screen" class="bg-white shadow-2xl rounded-xl p-8 md:p-10 max-w-2xl w-full text-center hidden">
+        <div class="w-20 h-20 bg-brand-light/30 text-brand-dark rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+        </div>
         <h1 class="text-3xl font-bold text-brand-darker mb-4">Quiz Complete!</h1>
-        <p class="text-xl text-gray-700 mb-6">You have successfully completed the Module 1 Knowledge Check.</p>
-        <button id="restart-btn" class="bg-brand-dark text-white py-3 px-6 rounded-lg font-semibold hover:bg-brand-darker transition-colors focus:outline-none focus:ring-2 focus:ring-brand-dark focus:ring-offset-2">
+        <p class="text-xl text-gray-700 mb-8">You have successfully completed the Module 1 Knowledge Check and demonstrated your understanding of DFV principles.</p>
+        <button id="restart-btn" class="inline-block bg-brand-dark text-white py-3 px-8 rounded-lg font-semibold hover:bg-brand-darker transition-colors focus:outline-none focus:ring-2 focus:ring-brand-dark focus:ring-offset-2">
             Restart Quiz
         </button>
     </div>
@@ -111,40 +127,51 @@
         document.addEventListener('DOMContentLoaded', () => {
 
             // --- 1. DEFINE QUIZ DATA ---
-            // Based on Module 1: 1.1 Values, 1.2 Role, 1.3 Biases
             const quizData = [
                 {
-                    question: "What is a good way to help someone who might be experiencing violence?",
-                    type: "radio", // Single answer
+                    question: "Which of the following statements describe why assumptions can be harmful in DFV situations? (Select all that apply)",
+                    type: "checkbox",
                     options: [
-                        { text: "Telling the person what to do to fix their problem.", id: "q1_a" },
-                        { text: "It’s not the clubs business and should be ignored.", id: "q1_b" },
-                        { text: "Believing the person, helping them stay safe, and not judging them.", id: "q1_c" },
-                        { text: "Only helping if you can see bruises or other proof.", id: "q1_d" }
+                        { text: "They can lead to victim-blaming.", id: "q1_a" },
+                        { text: "They help us make quick decisions in emergencies.", id: "q1_b" },
+                        { text: "They may cause us to minimize abuse.", id: "q1_c" },
+                        { text: "They ensure we remain unbiased.", id: "q1_d" }
                     ],
-                    correct: ["q1_c"]
+                    correct: ["q1_a", "q1_c"]
                 },
                 {
-                    question: "If you feel upset during the course, what should you do? (Pick all that are correct)",
-                    type: "checkbox", // Multiple answers
+                    question: "Why is it important to be aware of your personal values when responding to DFV?",
+                    type: "checkbox",
                     options: [
-                        { text: "Stop the course and take a break.", id: "q2_a" },
-                        { text: "Contact your manager or the EAP (Employee Assistance Program) for support.", id: "q2_b" },
-                        { text: "Force yourself to finish the module quickly.", id: "q2_c" },
-                        { text: "Look at the support services list from the course.", id: "q2_d" }
+                        { text: "Because values never change and must be enforced.", id: "q2_a" },
+                        { text: "Because values act like filters and influence how we interpret and respond to situations.", id: "q2_b" },
+                        { text: "Because being aware of values helps us avoid harmful judgments.", id: "q2_c" },
+                        { text: "Because values determine whether DFV is acceptable.", id: "q2_d" }
                     ],
-                    correct: ["q2_a", "q2_b", "q2_d"]
+                    correct: ["q2_b", "q2_c"]
                 },
                 {
-                    question: "Why is it important to know your own biases (your assumptions)? (Pick all that are correct)",
-                    type: "checkbox", // Multiple answers
+                    question: "Which of the following are essential principles for responding to DFV? (Select all that apply)",
+                    type: "checkbox",
                     options: [
-                        { text: "To stop yourself from dismissing the situation as 'just a drunken fight'.", id: "q3_a" },
-                        { text: "So you only help people who think like you.", id: "q3_b" },
-                        { text: "To avoid judging people who might need help.", id: "q3_c" },
-                        { text: "To see that thinking 'it's not our business' stops you from helping.", id: "q3_d" }
+                        { text: "Safety First", id: "q3_a" },
+                        { text: "Be Non-Judgmental", id: "q3_b" },
+                        { text: "Share details with colleagues for transparency", id: "q3_c" },
+                        { text: "Respect Their Choices", id: "q3_d" },
+                        { text: "Believe and Validate", id: "q3_e" }
                     ],
-                    correct: ["q3_a", "q3_c", "q3_d"]
+                    correct: ["q3_a", "q3_b", "q3_d", "q3_e"]
+                },
+                {
+                    question: "Which of these is an example of an assumption that could lead to harm?",
+                    type: "checkbox",
+                    options: [
+                        { text: "“If it was really bad, they’d leave.”", id: "q4_a" },
+                        { text: "“DFV only happens in certain communities.”", id: "q4_b" },
+                        { text: "“It’s our responsibility to ensure safety.”", id: "q4_c" },
+                        { text: "“People experiencing DFV always ask for help.”", id: "q4_d" }
+                    ],
+                    correct: ["q4_a", "q4_b", "q4_d"]
                 }
             ];
 
@@ -154,22 +181,17 @@
             const questionText = document.getElementById('question-text');
             const optionsContainer = document.getElementById('options-container');
             const checkBtn = document.getElementById('check-btn');
-            const nextBtn = document.getElementById('next-btn'); // This button is now in the modal
+            const nextBtn = document.getElementById('next-btn');
             const feedbackText = document.getElementById('feedback-text');
-            const correctModal = document.getElementById('correct-modal'); // The new modal
+            const correctModal = document.getElementById('correct-modal');
             const completionScreen = document.getElementById('completion-screen');
             const restartBtn = document.getElementById('restart-btn');
 
             // --- 3. STATE VARIABLES ---
             let currentQuestionIndex = 0;
-            let questionsAnswered = new Array(quizData.length).fill(false);
 
             // --- 4. FUNCTIONS ---
 
-            /**
-             * Loads a question onto the page
-             * @param {number} index - The index of the question to load
-             */
             function loadQuestion(index) {
                 const question = quizData[index];
                 
@@ -180,122 +202,69 @@
                 // Clear old options and feedback
                 optionsContainer.innerHTML = '';
                 feedbackText.textContent = '';
-                feedbackText.className = 'text-center font-semibold text-lg'; // Reset classes
+                feedbackText.className = 'text-center font-semibold text-lg';
 
                 // Create and append new options
                 question.options.forEach(option => {
-                    const optionId = option.id;
-                    
                     const wrapper = document.createElement('div');
-                    wrapper.className = 'border border-gray-300 rounded-lg transition-all hover:bg-brand-light/20';
-                    
-                    const input = document.createElement('input');
-                    input.type = question.type;
-                    input.id = optionId;
-                    input.name = `question_${index}`;
-                    input.value = optionId;
-                    input.className = 'ml-3 mt-3'; // hidden
+                    wrapper.className = 'option-wrapper border border-gray-300 rounded-lg';
                     
                     const label = document.createElement('label');
-                    label.htmlFor = optionId;
-                    label.textContent = option.text;
-                    label.className = 'flex items-center p-3 cursor-pointer w-full';
+                    label.htmlFor = option.id;
+                    label.className = 'flex items-start p-4 cursor-pointer w-full';
                     
-                    // Manually build label content to put input first
-                    label.innerHTML = `<input type="${question.type}" id="${optionId}" name="question_${index}" value="${optionId}" class="mr-3 flex-shrink-0">
-                                       <span class="flex-1">${option.text}</span>`;
+                    label.innerHTML = `
+                        <input type="${question.type}" id="${option.id}" name="question_${index}" value="${option.id}" class="mt-1.5 mr-4 flex-shrink-0 scale-125">
+                        <span class="flex-1 text-gray-700 leading-relaxed font-medium">${option.text}</span>
+                    `;
                     
                     wrapper.appendChild(label);
                     optionsContainer.appendChild(wrapper);
                 });
 
-                // Reset button states
+                // Show check button
                 checkBtn.classList.remove('hidden');
-                // The next-btn is in the modal, which is hidden, so no action is needed on it here.
+                nextBtn.textContent = (currentQuestionIndex === quizData.length - 1) ? "Finish Quiz" : "Next Question";
             }
 
-            /**
-             * Checks the selected answer(s) for the current question
-             */
             function checkAnswer() {
                 const question = quizData[currentQuestionIndex];
                 const selectedInputs = optionsContainer.querySelectorAll('input:checked');
                 
-                let selectedAnswers = [];
-                selectedInputs.forEach(input => {
-                    selectedAnswers.push(input.value);
-                });
-
-                // Sort arrays for consistent comparison
-                const correctAnswers = [...question.correct].sort();
-                selectedAnswers.sort();
+                let selectedAnswers = Array.from(selectedInputs).map(input => input.value);
 
                 // Check for equality
-                const isCorrect = JSON.stringify(selectedAnswers) === JSON.stringify(correctAnswers);
+                const isCorrect = selectedAnswers.length === question.correct.length && 
+                                  selectedAnswers.every(val => question.correct.includes(val));
 
                 if (isCorrect) {
-                    // --- CORRECT ANSWER ---
-                    // Clear any previous "incorrect" feedback
+                    // CORRECT
                     feedbackText.textContent = '';
-                    feedbackText.className = 'text-center font-semibold text-lg';
-                    
-                    // Show the modal
                     correctModal.classList.remove('hidden');
-                    
-                    // Hide check button
                     checkBtn.classList.add('hidden');
-                    
-                    // Mark as answered
-                    questionsAnswered[currentQuestionIndex] = true;
-
-                    // Update next button text for last question
-                    if (currentQuestionIndex === quizData.length - 1) {
-                        nextBtn.textContent = "Finish Quiz";
-                    }
-
                 } else {
-                    // --- INCORRECT ANSWER ---
-                    feedbackText.textContent = "Incorrect, Try Again.";
-                    feedbackText.classList.add('text-red-600');
-                    
-                    // Ensure modal stays hidden
-                    correctModal.classList.add('hidden');
+                    // INCORRECT
+                    feedbackText.textContent = "That's not quite right. Please try again.";
+                    feedbackText.className = 'text-center font-semibold text-lg text-red-600';
                 }
             }
 
-            /**
-             * Moves to the next question or shows the completion screen
-             */
             function nextQuestion() {
-                // Hide the modal first
                 correctModal.classList.add('hidden');
-
                 currentQuestionIndex++;
+                
                 if (currentQuestionIndex < quizData.length) {
                     loadQuestion(currentQuestionIndex);
                 } else {
-                    // Show completion screen
                     quizContainer.classList.add('hidden');
                     completionScreen.classList.remove('hidden');
                 }
             }
 
-            /**
-             * Resets the quiz to the beginning
-             */
             function restartQuiz() {
                 currentQuestionIndex = 0;
-                questionsAnswered.fill(false);
-                nextBtn.textContent = "Next Question"; // Reset button text
-                
-                // Ensure all overlay screens are hidden
                 completionScreen.classList.add('hidden');
-                correctModal.classList.add('hidden');
-
-                // Show the main quiz container
                 quizContainer.classList.remove('hidden');
-                
-                // Reload the first question (which also shows checkBtn)
                 loadQuestion(currentQuestionIndex);
             }
 
@@ -308,6 +277,4 @@
         });
     </script>
 </body>
-
 </html>
-
