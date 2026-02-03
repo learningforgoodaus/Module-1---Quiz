@@ -116,10 +116,7 @@
             </svg>
         </div>
         <h1 class="text-3xl font-bold text-brand-darker mb-4">Quiz Complete!</h1>
-        <p class="text-xl text-gray-700 mb-8">You have successfully completed the Module 1 Knowledge Check and demonstrated your understanding of DFV principles.</p>
-        <button id="restart-btn" class="inline-block bg-brand-dark text-white py-3 px-8 rounded-lg font-semibold hover:bg-brand-darker transition-colors focus:outline-none focus:ring-2 focus:ring-brand-dark focus:ring-offset-2">
-            Restart Quiz
-        </button>
+        <p class="text-xl text-gray-700">You have successfully completed the Module 1 Knowledge Check and demonstrated your understanding of DFV principles.</p>
     </div>
 
     <!-- JavaScript Logic -->
@@ -185,7 +182,6 @@
             const feedbackText = document.getElementById('feedback-text');
             const correctModal = document.getElementById('correct-modal');
             const completionScreen = document.getElementById('completion-screen');
-            const restartBtn = document.getElementById('restart-btn');
 
             // --- 3. STATE VARIABLES ---
             let currentQuestionIndex = 0;
@@ -261,19 +257,11 @@
                 }
             }
 
-            function restartQuiz() {
-                currentQuestionIndex = 0;
-                completionScreen.classList.add('hidden');
-                quizContainer.classList.remove('hidden');
-                loadQuestion(currentQuestionIndex);
-            }
-
             // --- 5. INITIALIZE & EVENT LISTENERS ---
             loadQuestion(currentQuestionIndex);
 
             checkBtn.addEventListener('click', checkAnswer);
             nextBtn.addEventListener('click', nextQuestion);
-            restartBtn.addEventListener('click', restartQuiz);
         });
     </script>
 </body>
