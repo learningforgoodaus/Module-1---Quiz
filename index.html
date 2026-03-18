@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Module 1: Knowledge Check</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,9 +13,7 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
                     colors: {
                         'brand-light': '#C6B4D9',
                         'brand-medium': '#9C7F9D',
@@ -29,44 +27,42 @@
     </script>
     
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        input[type="radio"]:checked,
+        body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         input[type="checkbox"]:checked { accent-color: #513873; }
-        input[type="radio"]:focus,
-        input[type="checkbox"]:focus { outline: 2px solid #513873; outline-offset: 2px; }
-        .option-wrapper { transition: all 0.2s ease; }
-        .option-wrapper:hover { border-color: #9C7F9D; background-color: rgba(198, 180, 217, 0.1); }
+        .option-wrapper { transition: all 0.2s ease; cursor: pointer; }
+        /* Prevent text selection on rapid tapping of options */
+        .option-wrapper { user-select: none; -webkit-user-select: none; }
     </style>
 </head>
 <body class="bg-brand-bg min-h-screen flex items-center justify-center p-4">
 
-    <div class="bg-white shadow-2xl rounded-xl p-6 md:p-8 max-w-2xl w-full" id="quiz-container">
+    <div class="bg-white shadow-2xl rounded-xl p-5 md:p-8 max-w-2xl w-full" id="quiz-container">
         
         <div id="quiz-header">
-            <h1 class="text-2xl md:text-3xl font-bold text-brand-darker mb-2">Module 1 Knowledge Check</h1>
-            <p class="text-sm text-gray-600 mb-6" id="question-counter">Question 1 of 4</p>
+            <h1 class="text-xl md:text-3xl font-bold text-brand-darker mb-1">Module 1 Knowledge Check</h1>
+            <p class="text-xs md:text-sm text-gray-500 mb-6" id="question-counter">Question 1 of 4</p>
         </div>
 
         <div id="question-area">
-            <h2 class="text-xl font-semibold text-brand-darker mb-5" id="question-text"></h2>
+            <h2 class="text-lg md:text-xl font-semibold text-brand-darker mb-5 leading-tight" id="question-text"></h2>
             
             <div class="space-y-3" id="options-container">
                 </div>
         </div>
 
-        <div class="mt-6 min-h-[2rem]">
-            <p id="feedback-text" class="text-center font-semibold text-lg" aria-live="polite"></p>
+        <div class="mt-4 min-h-[1.5rem]">
+            <p id="feedback-text" class="text-center font-semibold text-base" aria-live="polite"></p>
         </div>
 
-        <div class="mt-4 space-y-3">
-            <button id="check-btn" class="w-full bg-brand-dark text-white py-3 px-5 rounded-lg font-semibold hover:bg-brand-darker transition-colors focus:outline-none focus:ring-2 focus:ring-brand-dark focus:ring-offset-2">
+        <div class="mt-4">
+            <button id="check-btn" class="w-full bg-brand-dark text-white py-4 px-5 rounded-lg font-bold hover:bg-brand-darker active:scale-[0.98] transition-all focus:outline-none">
                 Check Answer
             </button>
         </div>
     </div>
 
-    <div id="correct-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 hidden z-50" aria-modal="true" role="dialog">
-        <div class="bg-white rounded-xl p-8 shadow-2xl text-center max-w-sm w-full transform transition-all">
+    <div id="correct-modal" class="fixed inset-0 bg-black/80 flex items-center justify-center p-6 hidden z-50">
+        <div class="bg-white rounded-2xl p-8 shadow-2xl text-center max-w-sm w-full">
             <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
@@ -74,20 +70,20 @@
             </div>
             <h2 class="text-2xl font-bold text-gray-800 mb-2">Correct!</h2>
             <p class="text-gray-600 mb-6">Well done on identifying the right response.</p>
-            <button id="next-btn" class="w-full bg-brand-dark text-white py-3 px-5 rounded-lg font-semibold hover:bg-brand-darker transition-colors focus:outline-none focus:ring-2 focus:ring-brand-dark focus:ring-offset-2">
+            <button id="next-btn" class="w-full bg-brand-dark text-white py-4 rounded-lg font-bold">
                 Next Question
             </button>
         </div>
     </div>
 
-    <div id="completion-screen" class="bg-white shadow-2xl rounded-xl p-8 md:p-10 max-w-2xl w-full text-center hidden">
+    <div id="completion-screen" class="bg-white shadow-2xl rounded-xl p-8 max-w-2xl w-full text-center hidden">
         <div class="w-20 h-20 bg-brand-light/30 text-brand-dark rounded-full flex items-center justify-center mx-auto mb-6">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
         </div>
-        <h1 class="text-3xl font-bold text-brand-darker mb-4">Quiz Complete!</h1>
-        <p class="text-xl text-gray-700">You have successfully completed the Module 1 Knowledge Check.</p>
+        <h1 class="text-2xl font-bold text-brand-darker mb-4">Quiz Complete!</h1>
+        <p class="text-gray-700">You have successfully completed the Module 1 Knowledge Check.</p>
     </div>
 
     <script>
@@ -150,64 +146,54 @@
             const correctModal = document.getElementById('correct-modal');
             const completionScreen = document.getElementById('completion-screen');
 
-            let currentQuestionIndex = 0;
+            let currentIdx = 0;
 
             function loadQuestion(index) {
-                const question = quizData[index];
+                const data = quizData[index];
                 questionCounter.textContent = `Question ${index + 1} of ${quizData.length}`;
-                questionText.textContent = question.question;
+                questionText.textContent = data.question;
                 optionsContainer.innerHTML = '';
                 feedbackText.textContent = '';
-                feedbackText.className = 'text-center font-semibold text-lg';
-
-                question.options.forEach(option => {
-                    const wrapper = document.createElement('div');
-                    wrapper.className = 'option-wrapper border border-gray-300 rounded-lg';
-                    const label = document.createElement('label');
-                    label.htmlFor = option.id;
-                    label.className = 'flex items-start p-4 cursor-pointer w-full';
-                    label.innerHTML = `
-                        <input type="${question.type}" id="${option.id}" name="question_${index}" value="${option.id}" class="mt-1.5 mr-4 flex-shrink-0 scale-125">
-                        <span class="flex-1 text-gray-700 leading-relaxed font-medium">${option.text}</span>
+                
+                data.options.forEach(opt => {
+                    const div = document.createElement('div');
+                    div.className = 'option-wrapper border border-gray-300 rounded-lg active:bg-gray-50';
+                    div.innerHTML = `
+                        <label class="flex items-center p-4 cursor-pointer w-full">
+                            <input type="checkbox" id="${opt.id}" value="${opt.id}" class="w-5 h-5 mr-4 flex-shrink-0">
+                            <span class="text-gray-700 text-sm md:text-base font-medium">${opt.text}</span>
+                        </label>
                     `;
-                    wrapper.appendChild(label);
-                    optionsContainer.appendChild(wrapper);
+                    optionsContainer.appendChild(div);
                 });
-
                 checkBtn.classList.remove('hidden');
-                nextBtn.textContent = (currentQuestionIndex === quizData.length - 1) ? "Finish Quiz" : "Next Question";
+                nextBtn.textContent = (currentIdx === quizData.length - 1) ? "Finish Quiz" : "Next Question";
             }
 
-            function checkAnswer() {
-                const question = quizData[currentQuestionIndex];
-                const selectedInputs = optionsContainer.querySelectorAll('input:checked');
-                let selectedAnswers = Array.from(selectedInputs).map(input => input.value);
-                const isCorrect = selectedAnswers.length === question.correct.length && 
-                                  selectedAnswers.every(val => question.correct.includes(val));
+            checkBtn.onclick = () => {
+                const selected = Array.from(optionsContainer.querySelectorAll('input:checked')).map(i => i.value);
+                const correct = quizData[currentIdx].correct;
+                const isCorrect = selected.length === correct.length && selected.every(v => correct.includes(v));
 
                 if (isCorrect) {
                     correctModal.classList.remove('hidden');
-                    checkBtn.classList.add('hidden');
                 } else {
                     feedbackText.textContent = "That's not quite right. Please try again.";
-                    feedbackText.className = 'text-center font-semibold text-lg text-red-600';
+                    feedbackText.className = "text-center font-semibold text-red-600";
                 }
-            }
+            };
 
-            function nextQuestion() {
+            nextBtn.onclick = () => {
                 correctModal.classList.add('hidden');
-                currentQuestionIndex++;
-                if (currentQuestionIndex < quizData.length) {
-                    loadQuestion(currentQuestionIndex);
-                } else {
+                currentIdx++;
+                if (currentIdx < quizData.length) loadQuestion(currentIdx);
+                else {
                     quizContainer.classList.add('hidden');
                     completionScreen.classList.remove('hidden');
                 }
-            }
+            };
 
-            loadQuestion(currentQuestionIndex);
-            checkBtn.addEventListener('click', checkAnswer);
-            nextBtn.addEventListener('click', nextQuestion);
+            loadQuestion(currentIdx);
         });
     </script>
 </body>
