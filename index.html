@@ -4,14 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Module 1: Knowledge Check</title>
-    <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Load Inter font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Configure Brand Colors for Tailwind -->
     <script>
         tailwind.config = {
             theme: {
@@ -32,59 +29,35 @@
     </script>
     
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        /* Style radio buttons and checkboxes with the brand color */
+        body { font-family: 'Inter', sans-serif; }
         input[type="radio"]:checked,
-        input[type="checkbox"]:checked {
-            accent-color: #513873; 
-        }
-        
-        /* Custom focus rings to use brand color */
+        input[type="checkbox"]:checked { accent-color: #513873; }
         input[type="radio"]:focus,
-        input[type="checkbox"]:focus {
-            outline: 2px solid #513873;
-            outline-offset: 2px;
-        }
-
-        .option-wrapper {
-            transition: all 0.2s ease;
-        }
-        
-        .option-wrapper:hover {
-            border-color: #9C7F9D;
-            background-color: rgba(198, 180, 217, 0.1);
-        }
+        input[type="checkbox"]:focus { outline: 2px solid #513873; outline-offset: 2px; }
+        .option-wrapper { transition: all 0.2s ease; }
+        .option-wrapper:hover { border-color: #9C7F9D; background-color: rgba(198, 180, 217, 0.1); }
     </style>
 </head>
 <body class="bg-brand-bg min-h-screen flex items-center justify-center p-4">
 
-    <!-- Quiz Card Container -->
     <div class="bg-white shadow-2xl rounded-xl p-6 md:p-8 max-w-2xl w-full" id="quiz-container">
         
-        <!-- Quiz Header -->
         <div id="quiz-header">
             <h1 class="text-2xl md:text-3xl font-bold text-brand-darker mb-2">Module 1 Knowledge Check</h1>
             <p class="text-sm text-gray-600 mb-6" id="question-counter">Question 1 of 4</p>
         </div>
 
-        <!-- Question Area -->
         <div id="question-area">
             <h2 class="text-xl font-semibold text-brand-darker mb-5" id="question-text"></h2>
             
-            <!-- Options Area -->
             <div class="space-y-3" id="options-container">
-                <!-- Options will be dynamically inserted here -->
-            </div>
+                </div>
         </div>
 
-        <!-- Feedback Area -->
         <div class="mt-6 min-h-[2rem]">
             <p id="feedback-text" class="text-center font-semibold text-lg" aria-live="polite"></p>
         </div>
 
-        <!-- Button Controls -->
         <div class="mt-4 space-y-3">
             <button id="check-btn" class="w-full bg-brand-dark text-white py-3 px-5 rounded-lg font-semibold hover:bg-brand-darker transition-colors focus:outline-none focus:ring-2 focus:ring-brand-dark focus:ring-offset-2">
                 Check Answer
@@ -92,7 +65,6 @@
         </div>
     </div>
 
-    <!-- Correct Answer Modal (Pop-out) -->
     <div id="correct-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 hidden z-50" aria-modal="true" role="dialog">
         <div class="bg-white rounded-xl p-8 shadow-2xl text-center max-w-sm w-full transform transition-all">
             <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -108,7 +80,6 @@
         </div>
     </div>
 
-    <!-- Completion Screen -->
     <div id="completion-screen" class="bg-white shadow-2xl rounded-xl p-8 md:p-10 max-w-2xl w-full text-center hidden">
         <div class="w-20 h-20 bg-brand-light/30 text-brand-dark rounded-full flex items-center justify-center mx-auto mb-6">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -116,14 +87,11 @@
             </svg>
         </div>
         <h1 class="text-3xl font-bold text-brand-darker mb-4">Quiz Complete!</h1>
-        <p class="text-xl text-gray-700">You have successfully completed the Module 1 Knowledge Check and demonstrated your understanding of DFV principles.</p>
+        <p class="text-xl text-gray-700">You have successfully completed the Module 1 Knowledge Check.</p>
     </div>
 
-    <!-- JavaScript Logic -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-
-            // --- 1. DEFINE QUIZ DATA ---
             const quizData = [
                 {
                     question: "Which of the following statements describe why assumptions can be harmful in DFV situations? (Select all that apply)",
@@ -137,7 +105,7 @@
                     correct: ["q1_a", "q1_c"]
                 },
                 {
-                    question: "Why is it important to be aware of your personal values when responding to DFV?",
+                    question: "Why is it important to be aware of your personal values when responding to DFV? (Select all that apply)",
                     type: "checkbox",
                     options: [
                         { text: "Because values never change and must be enforced.", id: "q2_a" },
@@ -160,7 +128,7 @@
                     correct: ["q3_a", "q3_b", "q3_d", "q3_e"]
                 },
                 {
-                    question: "Which of these is an example of an assumption that could lead to harm?",
+                    question: "Which of these is an example of an assumption that could lead to harm? (Select all that apply)",
                     type: "checkbox",
                     options: [
                         { text: "“If it was really bad, they’d leave.”", id: "q4_a" },
@@ -172,7 +140,6 @@
                 }
             ];
 
-            // --- 2. GET ELEMENT REFERENCES ---
             const quizContainer = document.getElementById('quiz-container');
             const questionCounter = document.getElementById('question-counter');
             const questionText = document.getElementById('question-text');
@@ -183,42 +150,30 @@
             const correctModal = document.getElementById('correct-modal');
             const completionScreen = document.getElementById('completion-screen');
 
-            // --- 3. STATE VARIABLES ---
             let currentQuestionIndex = 0;
-
-            // --- 4. FUNCTIONS ---
 
             function loadQuestion(index) {
                 const question = quizData[index];
-                
-                // Update text
                 questionCounter.textContent = `Question ${index + 1} of ${quizData.length}`;
                 questionText.textContent = question.question;
-                
-                // Clear old options and feedback
                 optionsContainer.innerHTML = '';
                 feedbackText.textContent = '';
                 feedbackText.className = 'text-center font-semibold text-lg';
 
-                // Create and append new options
                 question.options.forEach(option => {
                     const wrapper = document.createElement('div');
                     wrapper.className = 'option-wrapper border border-gray-300 rounded-lg';
-                    
                     const label = document.createElement('label');
                     label.htmlFor = option.id;
                     label.className = 'flex items-start p-4 cursor-pointer w-full';
-                    
                     label.innerHTML = `
                         <input type="${question.type}" id="${option.id}" name="question_${index}" value="${option.id}" class="mt-1.5 mr-4 flex-shrink-0 scale-125">
                         <span class="flex-1 text-gray-700 leading-relaxed font-medium">${option.text}</span>
                     `;
-                    
                     wrapper.appendChild(label);
                     optionsContainer.appendChild(wrapper);
                 });
 
-                // Show check button
                 checkBtn.classList.remove('hidden');
                 nextBtn.textContent = (currentQuestionIndex === quizData.length - 1) ? "Finish Quiz" : "Next Question";
             }
@@ -226,20 +181,14 @@
             function checkAnswer() {
                 const question = quizData[currentQuestionIndex];
                 const selectedInputs = optionsContainer.querySelectorAll('input:checked');
-                
                 let selectedAnswers = Array.from(selectedInputs).map(input => input.value);
-
-                // Check for equality
                 const isCorrect = selectedAnswers.length === question.correct.length && 
                                   selectedAnswers.every(val => question.correct.includes(val));
 
                 if (isCorrect) {
-                    // CORRECT
-                    feedbackText.textContent = '';
                     correctModal.classList.remove('hidden');
                     checkBtn.classList.add('hidden');
                 } else {
-                    // INCORRECT
                     feedbackText.textContent = "That's not quite right. Please try again.";
                     feedbackText.className = 'text-center font-semibold text-lg text-red-600';
                 }
@@ -248,7 +197,6 @@
             function nextQuestion() {
                 correctModal.classList.add('hidden');
                 currentQuestionIndex++;
-                
                 if (currentQuestionIndex < quizData.length) {
                     loadQuestion(currentQuestionIndex);
                 } else {
@@ -257,13 +205,10 @@
                 }
             }
 
-            // --- 5. INITIALIZE & EVENT LISTENERS ---
             loadQuestion(currentQuestionIndex);
-
             checkBtn.addEventListener('click', checkAnswer);
             nextBtn.addEventListener('click', nextQuestion);
         });
     </script>
 </body>
 </html>
-
